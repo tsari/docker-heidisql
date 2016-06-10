@@ -4,6 +4,7 @@ MAINTAINER Tibor Sári <tiborsari@gmx.de>
 RUN apt-get update && apt-get install -y \
         unzip \
         wget \
+        sudo \
         --no-install-recommends \
         && rm -rf /var/lib/apt/lists/*
 
@@ -13,4 +14,10 @@ RUN mkdir -m 777 /home/wine && \
     unzip /home/wine/HeidiSQL_9.3_Portable.zip && \
     chmod -R 777 /home/wine
 
-CMD wine /home/wine/heidisql.exe
+
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Set up the command arguments
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["wine", "/home/wine/heidisql.exe"]
